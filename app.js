@@ -78,10 +78,8 @@ app.get("/deleteSneaker.html", (req, res) => {
 
 //Show sneakers with get
 app.get("/sneakers", (req, res) => {
-    res.write(`<p>Your result is ${Sneakers.map(s => {
-        return `<h3> Name ${s.brand} Rating ${s.gender} </h3>`
-    })}<p/>`)
-    res.send()
+
+    res.send(Sneakers)
 })
 
 //show sneakers with post
