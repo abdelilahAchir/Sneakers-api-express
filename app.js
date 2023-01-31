@@ -94,7 +94,13 @@ app.post("/sneakers", (req, res) => {
 app.post("/addSneaker", (req, res) => {
     let sneakerBrand = req.body.sneakerBrand + ""
     let sneakerModel = req.body.sneakerModel + ""
-    let sneaker = { brand: sneakerBrand.toLocaleLowerCase(), model: sneakerModel.toLowerCase() }
+    let Price = req.body.price
+    let Sizes = Object.values(req.body.sizes)
+    let Gender = req.body.gender
+    let Colors = Object.values(req.body.colors)
+    let Images = Object.values(req.body.images)
+
+    let sneaker = { brand: sneakerBrand, model: sneakerModel, price: Price, sizes: Sizes, gender: Gender, colors: Colors, images: Images }
     if (Sneakers.find(s => s.brand.toLowerCase() == sneaker.brand && s.model.toLocaleLowerCase() == sneaker.model)) {
 
         res.write("sneaker already added")
@@ -109,6 +115,7 @@ app.post("/addSneaker", (req, res) => {
 app.post("/deleteSneaker", (req, res) => {
     let Brand = req.body.sneakerBrand + ""
     let Model = req.body.sneakerModel + ""
+
     let sneaker = { brand: Brand, model: Model }
     if (Sneakers.find(s => s.brand.toLowerCase() == sneaker.brand.toLowerCase() && s.model.toLowerCase() == sneaker.model.toLowerCase())) {
         let sneakerIndex = Sneakers.findIndex(s => s.brand.toLowerCase() == sneaker.brand.toLowerCase() && s.model.toLowerCase() == sneaker.model.toLowerCase())
