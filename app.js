@@ -82,6 +82,9 @@ app.get("/sneakers", (req, res) => {
     res.send(Sneakers)
 })
 
+app.get("/addSneakerNow", (req, res) => {
+    res.send(sneaker)
+})
 //show sneakers with post
 app.post("/sneakers", (req, res) => {
     res.send(Sneakers);
