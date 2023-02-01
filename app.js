@@ -3,7 +3,7 @@ const app = express()
 const PORT = process.env.PORT || 3000
 const bodyParser = require("body-parser")
 app.use(bodyParser.urlencoded({ extended: true }))
-
+app.use(express.json())
 let Sneakers =
     [
         {
@@ -82,9 +82,7 @@ app.get("/sneakers", (req, res) => {
     res.send(Sneakers)
 })
 
-app.get("/addSneakerNow", (req, res) => {
-    res.send(sneaker)
-})
+
 //show sneakers with post
 app.post("/sneakers", (req, res) => {
     res.send(Sneakers);
@@ -123,7 +121,7 @@ app.post("/addSneakerNow", (req, res) => {
         Sneakers.push(sneaker)
         res.write(` The sneaker brand  ${sneaker.brand.toUpperCase()} and model ${sneaker.model.toUpperCase()} was added to the list`)
     }
-    res.send()
+    res.send(Sneakers)
 })
 
 //Delete sneaker
