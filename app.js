@@ -109,21 +109,6 @@ app.post("/addSneaker", (req, res) => {
     }
     res.send()
 })
-
-// //Add sneaker
-app.post("/addSneakerNow", (req, res) => {
-    let sneaker = req.body;
-
-    if (Sneakers.find(s => s.brand.toLowerCase() == sneaker.brand && s.model.toLocaleLowerCase() == sneaker.model)) {
-
-        res.write("sneaker already added")
-    } else {
-        Sneakers.push(sneaker)
-        res.write(` The sneaker brand  ${sneaker.brand.toUpperCase()} and model ${sneaker.model.toUpperCase()} was added to the list`)
-    }
-    res.send(Sneakers)
-})
-
 //Delete sneaker
 app.post("/deleteSneaker", (req, res) => {
     let Brand = req.body.sneakerBrand + ""
@@ -139,6 +124,34 @@ app.post("/deleteSneaker", (req, res) => {
     }
     res.send()
 })
+
+// //Add sneaker
+app.post("/addSneakerXu", (req, res) => {
+    let sneaker = req.body;
+
+    if (Sneakers.find(s => s.brand.toLowerCase() == sneaker.brand && s.model.toLocaleLowerCase() == sneaker.model)) {
+        console.log("sneaker already added")
+    } else {
+        Sneakers.push(sneaker)
+        console.log(` The sneaker brand  ${sneaker.brand.toUpperCase()} and model ${sneaker.model.toUpperCase()} was added to the list`)
+    }
+    res.send(Sneakers)
+})
+
+//Delete Sneaker
+app.post("/deleteSneakerXu", (req, res) => {
+    let sneaker = req.body
+
+    if (Sneakers.find(s => s.brand.toLowerCase() == sneaker.brand.toLowerCase() && s.model.toLowerCase() == sneaker.model.toLowerCase())) {
+        let sneakerIndex = Sneakers.findIndex(s => s.brand.toLowerCase() == sneaker.brand.toLowerCase() && s.model.toLowerCase() == sneaker.model.toLowerCase())
+        Sneakers.splice(sneakerIndex, 1)
+        res.write(` the brand ${sneaker.brand.toUpperCase()} with model ${sneaker.model.toLocaleUpperCase()} was deleted from the list`)
+    } else {
+        res.write(`${sneaker.model.toUpperCase()} Is not in the list`)
+    }
+    res.send()
+})
+
 
 
 app.listen(PORT, () => {
