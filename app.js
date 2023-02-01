@@ -109,6 +109,20 @@ app.post("/addSneaker", (req, res) => {
     res.send()
 })
 
+// //Add sneaker
+app.post("/addSneakerNow", (req, res) => {
+    let sneaker = req.body;
+
+    if (Sneakers.find(s => s.brand.toLowerCase() == sneaker.brand && s.model.toLocaleLowerCase() == sneaker.model)) {
+
+        res.write("sneaker already added")
+    } else {
+        Sneakers.push(sneaker)
+        res.write(` The sneaker brand  ${sneaker.brand.toUpperCase()} and model ${sneaker.model.toUpperCase()} was added to the list`)
+    }
+    res.send()
+})
+
 //Delete sneaker
 app.post("/deleteSneaker", (req, res) => {
     let Brand = req.body.sneakerBrand + ""
