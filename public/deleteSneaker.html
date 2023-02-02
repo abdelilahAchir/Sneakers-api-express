@@ -13,18 +13,24 @@
           type="text"
           name="sneakerBrand"
           placeholder="Sneaker brand to delete"
+          required
         />
         <hr />
         <input
           type="text"
           name="sneakerModel"
           placeholder="Sneaker model to delete"
+          required
         />
         <hr />
         <button type="submit" name="deleteSneaker">Delete Sneaker</button>
       </form>
       <hr />
       <button type="button"><a href="index.html"> Back main page</a></button>
+      <hr />
+      <form action="/sneakers" method="post">
+        <button type="submit" name="seeSneakers">See stock</button>
+      </form>
     </div>
   </body>
 </html>

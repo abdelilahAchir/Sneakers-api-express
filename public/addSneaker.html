@@ -13,40 +13,49 @@
           name="sneakerBrand"
           type="text"
           placeholder="Enter sneaker name"
+          required
         />
         <hr />
         <input
           name="sneakerModel"
           type="text"
           placeholder="Enter sneaker model"
+          required
         />
         <hr />
-        <input name="price" type="text" placeholder="sneaker price" />
+        <input name="price" type="text" placeholder="sneaker price" required />
         <hr />
         <input
           name="sizes"
           type="text"
           placeholder="sizes separated with a space"
+          required
         />
         <hr />
-        <input type="text" name="gender" placeholder="gender" />
+        <input type="text" name="gender" placeholder="gender" required />
         <hr />
         <input
           type="text"
           name="colors"
           placeholder="colors separated with a space"
+          required
         />
         <hr />
         <input
           type="text"
           name="images"
           placeholder="images urls separated with a space"
+          required
         />
         <hr />
         <button type="submit">Add sneaker</button>
       </form>
       <hr />
       <button type="button"><a href="index.html"> Back main page</a></button>
+      <hr />
+      <form action="/sneakers" method="post">
+        <button type="submit" name="seeSneakers">See stock</button>
+      </form>
     </div>
   </body>
 </html>
