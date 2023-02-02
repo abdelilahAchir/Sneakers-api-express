@@ -95,6 +95,7 @@ app.post("/sneakers", (req, res) => {
 
 // //Add sneaker
 app.post("/addSneaker", (req, res) => {
+    let sneakerid = Sneakers.length() + 1
     let sneakerBrand = req.body.sneakerBrand + ""
     let sneakerModel = req.body.sneakerModel + ""
     let Price = req.body.price
@@ -103,7 +104,7 @@ app.post("/addSneaker", (req, res) => {
     let Colors = (req.body.colors + "").trim().split(' ').filter((s) => s != '' && s != ' ')
     let Images = (req.body.images + "").trim().split(' ').filter((s) => s != '' && s != ' ')
 
-    let sneaker = { brand: sneakerBrand, model: sneakerModel, price: Price, sizes: Sizes, gender: Gender, colors: Colors, images: Images }
+    let sneaker = { id: sneakerid, brand: sneakerBrand, model: sneakerModel, price: Price, sizes: Sizes, gender: Gender, colors: Colors, images: Images }
     if (Sneakers.find(s => s.brand.toLowerCase() == sneaker.brand && s.model.toLocaleLowerCase() == sneaker.model)) {
         res.write("sneaker already added")
     } else {
