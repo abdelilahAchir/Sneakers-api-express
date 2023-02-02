@@ -4,6 +4,11 @@ const PORT = process.env.PORT || 3000
 const bodyParser = require("body-parser")
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.json())
+
+
+
+app.use(express.static(__dirname + '/public'))
+
 let Sneakers =
     [
         {
@@ -64,9 +69,11 @@ let Sneakers =
         }
     ]
 
+
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html")
 })
+
 
 app.get("/addSneaker.html", (req, res) => {
     res.sendFile(__dirname + "/addSneaker.html")
@@ -78,15 +85,15 @@ app.get("/deleteSneaker.html", (req, res) => {
 
 //Show sneakers with get
 app.get("/sneakers", (req, res) => {
-
     res.send(Sneakers)
 })
-
 
 //show sneakers with post
 app.post("/sneakers", (req, res) => {
     res.send(Sneakers);
 });
+
+
 
 
 // //Add sneaker
@@ -113,7 +120,6 @@ app.post("/addSneaker", (req, res) => {
 app.post("/deleteSneaker", (req, res) => {
     let Brand = req.body.sneakerBrand + ""
     let Model = req.body.sneakerModel + ""
-
     let sneaker = { brand: Brand, model: Model }
     if (Sneakers.find(s => s.brand.toLowerCase() == sneaker.brand.toLowerCase() && s.model.toLowerCase() == sneaker.model.toLowerCase())) {
         let sneakerIndex = Sneakers.findIndex(s => s.brand.toLowerCase() == sneaker.brand.toLowerCase() && s.model.toLowerCase() == sneaker.model.toLowerCase())
@@ -135,7 +141,7 @@ app.post("/addSneakerXu", (req, res) => {
         Sneakers.push(sneaker)
         console.log(` The sneaker brand  ${sneaker.brand.toUpperCase()} and model ${sneaker.model.toUpperCase()} was added to the list`)
     }
-    res.send(Sneakers)
+    res.send()
 })
 
 //Delete Sneaker
@@ -145,14 +151,12 @@ app.post("/deleteSneakerXu", (req, res) => {
     if (Sneakers.find(s => s.brand.toLowerCase() == sneaker.brand.toLowerCase() && s.model.toLowerCase() == sneaker.model.toLowerCase())) {
         let sneakerIndex = Sneakers.findIndex(s => s.brand.toLowerCase() == sneaker.brand.toLowerCase() && s.model.toLowerCase() == sneaker.model.toLowerCase())
         Sneakers.splice(sneakerIndex, 1)
-        res.write(` the brand ${sneaker.brand.toUpperCase()} with model ${sneaker.model.toLocaleUpperCase()} was deleted from the list`)
+        console.log(` the brand ${sneaker.brand.toUpperCase()} with model ${sneaker.model.toLocaleUpperCase()} was deleted from the list`)
     } else {
-        res.write(`${sneaker.model.toUpperCase()} Is not in the list`)
+        console.log(`${sneaker.model.toUpperCase()} Is not in the list`)
     }
     res.send()
 })
-
-
 
 app.listen(PORT, () => {
     console.log("listening to port " + PORT)

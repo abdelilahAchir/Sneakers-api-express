@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Add Sneaker</title>
+  </head>
+  <body>
+    <div class="body-add">
+      <form action="/addSneaker" method="post">
+        <h1>Add a sneaker</h1>
+        <input
+          name="sneakerBrand"
+          type="text"
+          placeholder="Enter sneaker name"
+        />
+        <hr />
+        <input
+          name="sneakerModel"
+          type="text"
+          placeholder="Enter sneaker model"
+        />
+        <hr />
+        <input name="price" type="text" placeholder="sneaker price" />
+        <hr />
+        <input
+          name="sizes"
+          type="text"
+          placeholder="sizes separated with a space"
+        />
+        <hr />
+        <input type="text" name="gender" placeholder="gender" />
+        <hr />
+        <input
+          type="text"
+          name="colors"
+          placeholder="colors separated with a space"
+        />
+        <hr />
+        <input
+          type="text"
+          name="images"
+          placeholder="images urls separated with a space"
+        />
+        <hr />
+        <button type="submit">Add sneaker</button>
+      </form>
+      <hr />
+      <button type="button"><a href="index.html"> Back main page</a></button>
+    </div>
+  </body>
+</html>

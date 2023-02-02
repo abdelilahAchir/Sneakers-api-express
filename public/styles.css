@@ -1,0 +1,56 @@
+.body-index {
+    text-align: center;
+    color: white;
+    margin: 10% 0 0 0;
+    font-size: larger;
+}
+
+.body-add {
+    text-align: center;
+    color: white;
+    margin: 5% 0 0% 0;
+    margin-left: 35%;
+    font-size: larger;
+    width: 25%;
+}
+
+.body-delete {
+    text-align: center;
+    color: white;
+    margin: 5% 0 0% 0;
+    margin-left: 35%;
+    font-size: larger;
+    width: 25%;
+}
+
+.back-button {
+    background-color: white;
+    width: 100%;
+
+}
+
+body {
+    background-color: black;
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+    font-weight: 700;
+}
+
+button {
+    font-weight: 700;
+    display: block;
+    width: 100%;
+}
+
+input {
+    text-align: center;
+    display: block;
+    width: 98%;
+}
+
+hr {
+    border-style: none;
+}
