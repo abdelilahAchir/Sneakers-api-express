@@ -95,7 +95,7 @@ app.post("/sneakers", (req, res) => {
 
 // //Add sneaker
 app.post("/addSneaker", (req, res) => {
-    let sneakerId = Sneakers.length + 1
+    let sneakerId = Sneakers.length
     let sneakerBrand = req.body.sneakerBrand + ""
     let sneakerModel = req.body.sneakerModel + ""
     let Price = req.body.price
@@ -131,7 +131,6 @@ app.post("/deleteSneaker", (req, res) => {
 // //Add sneaker
 app.post("/addSneakerXu", (req, res) => {
     let sneaker = req.body;
-
     if (Sneakers.find(s => s.brand.toLowerCase() == sneaker.brand && s.model.toLocaleLowerCase() == sneaker.model)) {
         console.log("sneaker already added")
     } else {
