@@ -1,10 +1,52 @@
 const express = require("express")
+const axios = require('axios');
+const https = require('https');
 const app = express()
-const PORT = process.env.PORT || 3000
-const bodyParser = require("body-parser")
+const PORT = process.env.PORT || 3000;
+const bodyParser = require("body-parser");
+const firebase = require('firebase/compat/app');
+require("firebase/compat/firestore");
+require('firebase/compat/database');
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyC5jLQAezHjVaqaL1y3nfPOHXH6KFJ-0oU",
+
+    authDomain: "snkrsxu.firebaseapp.com",
+    databaseURL: "https://snkrsxu-default-rtdb.firebaseio.com/",
+    projectId: "snkrsxu",
+
+    storageBucket: "snkrsxu.appspot.com",
+
+    messagingSenderId: "652819388919",
+
+    appId: "1:652819388919:web:b77272440eb923c3ebf6f2",
+
+    measurementId: "G-PTF4FMRF51"
+
+};
+
+
+const app2 = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore()
+
+
+
+firebase
+    .database()
+    .ref("/sneakers")
+    .once("value")
+    .then((snapshot) => {
+        const sneakers = snapshot.val();
+        console.log(sneakers);
+    });
+
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(express.static(__dirname + '/public'))
+var index = require('./public/index');
+
+app.use(express.static(__dirname + './public/index'))
 
 let Sneakers =
     [
@@ -63,6 +105,11 @@ let Sneakers =
             id: 11, brand: "nike", model: "dunk hi retro bttys", price: "1599", sizes: ["42", "43", "44", "45", "46"], gender: "men", colors: ["black", "blue"],
             images_urls: ["https://img01.ztat.net/article/spp-media-p1/937d4ed757d442f5bab2eea5935851c9/66e2b206cf5247f4b100e08f9a319555.jpg?imwidth=1800&filter=packshot",
                 "https://img01.ztat.net/article/spp-media-p1/d87405fc3bc64bd5a9be70623ba07c72/d65e5c4ab59841b38ca21ee2302a17ba.jpg?imwidth=1800&filter=packshot"]
+        },
+        {
+            id: 12, brand: "Cabron", model: "dunk hi retro bttys", price: "1599", sizes: ["42", "43", "44", "45", "46"], gender: "men", colors: ["black", "blue"],
+            images_urls: ["https://img01.ztat.net/article/spp-media-p1/937d4ed757d442f5bab2eea5935851c9/66e2b206cf5247f4b100e08f9a319555.jpg?imwidth=1800&filter=packshot",
+                "https://img01.ztat.net/article/spp-media-p1/d87405fc3bc64bd5a9be70623ba07c72/d65e5c4ab59841b38ca21ee2302a17ba.jpg?imwidth=1800&filter=packshot"]
         }
     ]
 
@@ -71,7 +118,9 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html")
 })
 
-
+app.get("/users", async (req, res) => {
+    await getUsersFirebase(res);
+});
 app.get("/addSneaker.html", (req, res) => {
     res.sendFile(__dirname + "/addSneaker.html")
 })
@@ -86,31 +135,55 @@ app.get("/sneakers", (req, res) => {
 })
 
 //show sneakers with post
-app.post("/sneakers", (req, res) => {
-    res.send(Sneakers);
+app.post("/sneakers", async (req, res) => {
+
+    try {
+        const querySnapshot = await db.collection("snkrsxu").get();
+        const sneakers = [];
+        querySnapshot.forEach((doc) => {
+            sneakers.push(doc.data());
+        });
+        res.send(sneakers);
+    } catch (error) {
+        console.error(`Error getting sneakers data: ${error.message}`);
+        res.status(500).send({ error: 'Error getting users data' });
+    }
+    //res.send(Sneakers);
 });
 
 
 
 
 // //Add sneaker
-app.post("/addSneaker", (req, res) => {
-    let sneakerId = Sneakers.length
+app.post("/addSneaker", async (req, res) => {
+    let x = 20;
+
+    let sneakerId = ++x;
     let sneakerBrand = req.body.sneakerBrand + ""
     let sneakerModel = req.body.sneakerModel + ""
     let Price = req.body.price
-    let Sizes = (req.body.sizes + "").trim().split(' ').filter((s) => s != '' && s != ' ')
+    let Sizes = (req.body.sizes?.trim() ?? '').split(' ').filter((s) => s != '' && s != ' ')
+    const SizesObject = Sizes.map((size, index) => ({ id: index + 1, name: size }))
     let Gender = req.body.gender
-    let Colors = (req.body.colors + "").trim().split(' ').filter((s) => s != '' && s != ' ')
+    const Colors = (req.body.colors?.trim() ?? '').split(' ').filter((s) => s != '' && s != ' ')
+    const ColorsObject = Colors.map((color, index) => ({ id: index + 1, name: color }))
     let Images = (req.body.images + "").trim().split(' ').filter((s) => s != '' && s != ' ')
+    const ImagesObject = Images.map((image, index) => ({ id: index + 1, name: image }))
 
-    let sneaker = { id: sneakerId, brand: sneakerBrand, model: sneakerModel, price: Price, sizes: Sizes, gender: Gender, colors: Colors, images_urls: Images }
-    if (Sneakers.find(s => s.brand.toLowerCase() == sneaker.brand && s.model.toLocaleLowerCase() == sneaker.model)) {
-        res.write("sneaker already added")
-    } else {
-        Sneakers.push(sneaker)
+    let sneaker = { id: sneakerId, brand: sneakerBrand, model: sneakerModel, price: Price, sizes: SizesObject, gender: Gender, colors: ColorsObject, images_urls: ImagesObject }
+    const query = db.collection("snkrsxu").where("id", "==", sneaker.id);
+    const querySnapShot = await query.get();
+    if (querySnapShot.empty) {
+        await db.collection("snkrsxu").add(sneaker);
         res.write(` The sneaker brand  ${sneaker.brand.toUpperCase()} and model ${sneaker.model.toUpperCase()} was added to the list`)
+    } else {
+        console.log(`Sneaker with id ${sneaker.id} already exists`)
     }
+
+
+    // res.send(sneakers);
+
+
     res.send()
 })
 //Delete sneaker
@@ -140,6 +213,13 @@ app.post("/addSneakerXu", (req, res) => {
     res.send()
 })
 
+
+
+
+app.get("/snkrs", async (req, res) => {
+    await getSneakersSqlDataBase(res);
+});
+
 //Delete Sneaker
 app.post("/deleteSneakerXu", (req, res) => {
     let sneaker = req.body
@@ -159,3 +239,64 @@ app.listen(PORT, () => {
 })
 
 
+const options = {
+    hostname: 'localhost',
+    port: 7203,
+    path: '/Sneakers',
+    method: 'GET',
+    rejectUnauthorized: false
+};
+
+async function getSneakersSqlDataBase(res) {
+    try {
+        const req2 = https.request(options, (response) => {
+            let data = '';
+            response.on('data', (chunk) => {
+                data += chunk;
+            });
+            response.on('end', async () => {
+                try {
+                    const sneakers = JSON.parse(data);
+                    for (const element of sneakers) {
+                        const query = db.collection("snkrsxu").where("id", "==", element.id);
+                        const querySnapShot = await query.get();
+                        if (querySnapShot.empty) {
+                            await db.collection("snkrsxu").add(element);
+                        } else {
+                            console.log(`Sneaker with id ${element.id} already exists`)
+                        }
+                    }
+
+                    res.send(sneakers);
+                } catch (error) {
+                    console.error(`Error parsing JSON data: ${error.message}`);
+                    res.status(500).send({ error: 'Error parsing JSON data' });
+                }
+            });
+        });
+
+        req2.on('error', (error) => {
+            console.error(`Error making request: ${error.message}`);
+            res.status(500).send({ error: 'Error making request' });
+        });
+
+        req2.end();
+    } catch (error) {
+        console.error(`Error getting sneakers data: ${error.message}`);
+        res.status(500).send({ error: 'Error getting sneakers data' });
+    }
+}
+
+async function getUsersFirebase(res) {
+    try {
+        const querySnapshot = await db.collection("users").get();
+        const users = [];
+        querySnapshot.forEach((doc) => {
+            users.push(doc.data());
+        });
+        res.send(users);
+    } catch (error) {
+        console.error(`Error getting users data: ${error.message}`);
+        res.status(500).send({ error: 'Error getting users data' });
+    }
+}
