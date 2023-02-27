@@ -156,9 +156,7 @@ app.post("/sneakers", async (req, res) => {
 
 // //Add sneaker
 app.post("/addSneaker", async (req, res) => {
-    let x = 20;
-
-    let sneakerId = ++x;
+    let sneakerId = guid();
     let sneakerBrand = req.body.sneakerBrand + ""
     let sneakerModel = req.body.sneakerModel + ""
     let Price = req.body.price
@@ -177,7 +175,7 @@ app.post("/addSneaker", async (req, res) => {
         await db.collection("snkrsxu").add(sneaker);
         res.write(` The sneaker brand  ${sneaker.brand.toUpperCase()} and model ${sneaker.model.toUpperCase()} was added to the list`)
     } else {
-        console.log(`Sneaker with id ${sneaker.id} already exists`)
+        res.write(`The Sneaker id ${sneaker.id} already exists`)
     }
 
 
@@ -187,17 +185,20 @@ app.post("/addSneaker", async (req, res) => {
     res.send()
 })
 //Delete sneaker
-app.post("/deleteSneaker", (req, res) => {
+app.post("/deleteSneaker", async (req, res) => {
     let Brand = req.body.sneakerBrand + ""
     let Model = req.body.sneakerModel + ""
     let sneaker = { brand: Brand, model: Model }
-    if (Sneakers.find(s => s.brand.toLowerCase() == sneaker.brand.toLowerCase() && s.model.toLowerCase() == sneaker.model.toLowerCase())) {
-        let sneakerIndex = Sneakers.findIndex(s => s.brand.toLowerCase() == sneaker.brand.toLowerCase() && s.model.toLowerCase() == sneaker.model.toLowerCase())
-        Sneakers.splice(sneakerIndex, 1)
-        res.write(` the brand ${sneaker.brand.toUpperCase()} with model ${sneaker.model.toLocaleUpperCase()} was deleted from the list`)
-    } else {
-        res.write(`${sneaker.model.toUpperCase()} Is not in the list`)
-    }
+    await db.collection("snkrsxu")
+        .where("brand", "==", sneaker.brand)
+        .where("model", "==", sneaker.model)
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                doc.ref.delete();
+            });
+        });
+    res.write(`The sneaker brand ${sneaker.brand} and model ${sneaker.model} was deleted from you firebase database `)
     res.send()
 })
 
@@ -299,4 +300,14 @@ async function getUsersFirebase(res) {
         console.error(`Error getting users data: ${error.message}`);
         res.status(500).send({ error: 'Error getting users data' });
     }
+}
+
+
+let guid = () => {
+    let s4 = () => {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
